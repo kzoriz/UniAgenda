@@ -16,8 +16,8 @@ Aplicação para organização de atividades acadêmicas como aulas, prazos de t
 
 1. **Clone o repositório:**
    ```bash
-   git clone [URL_DO_REPOSITÓRIO]
-   cd uniagenda
+   git clone https://github.com/kzoriz/UniAgenda.git
+   cd UniAgenda
    ```
 
 2. **Crie e ative um ambiente virtual (recomendado):**
@@ -82,7 +82,7 @@ Aplicação para organização de atividades acadêmicas como aulas, prazos de t
 
 ---
 
-## 🔌 Rotas da API
+## Rotas da API
 
 | Método | Rota                | Descrição                       |
 |--------|---------------------|----------------------------------|
@@ -93,7 +93,7 @@ Aplicação para organização de atividades acadêmicas como aulas, prazos de t
 
 ---
 
-## 🧾 Modelo de Dados
+## Modelo de Dados
 
 ```json
 {
@@ -108,7 +108,7 @@ Aplicação para organização de atividades acadêmicas como aulas, prazos de t
 
 ---
 
-## 🤝 Contribuição
+## Contribuição
 
 Contribuições são bem-vindas!  
 Siga os passos abaixo:
@@ -130,4 +130,4 @@ Siga os passos abaixo:
 
 ---
 
-**Licença:** [Especifique aqui, ex: MIT, GPL, etc.]
+**Licença:** MIT
