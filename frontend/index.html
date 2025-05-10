@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>UniAgenda</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <!-- Token CSRF para proteção -->
+  <meta name="csrf-token" content="{{ csrf_token }}">
+</head>
+<body>
+  <section class="section">
+    <div class="container">
+      <h1 class="title">UniAgenda</h1>
+
+      <form id="formAtividade" class="box">
+        <div class="field">
+          <label class="label">Título</label>
+          <div class="control">
+            <input class="input" type="text" id="titulo" required>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="label">Descrição</label>
+          <div class="control">
+            <textarea class="textarea" id="descricao" required></textarea>
+          </div>
+        </div>
+
+        <div class="field is-horizontal">
+          <div class="field-body">
+            <div class="field">
+              <label class="label">Data</label>
+              <div class="control">
+                <input class="input" type="date" id="data" required>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Hora</label>
+              <div class="control">
+                <input class="input" type="time" id="hora" required>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="field">
+          <button type="submit" class="button is-primary">Adicionar Atividade</button>
+        </div>
+      </form>
+
+      <h2 class="subtitle">Atividades</h2>
+      <div id="listaAtividades"></div>
+    </div>
+  </section>
+
+  <script>
+    // Função para pegar o token CSRF dos cookies
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    const csrftoken = getCookie('csrftoken');
+
+    document.getElementById('formAtividade').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const titulo = document.getElementById('titulo').value;
+      const descricao = document.getElementById('descricao').value;
+      const data = document.getElementById('data').value;
+      const hora = document.getElementById('hora').value;
+
+      await fetch('/atividades/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({ titulo, descricao, data, hora, status: 'pendente' })
+      });
+
+      e.target.reset();
+      carregarAtividades();
+    });
+
+    async function carregarAtividades() {
+      const res = await fetch('/atividades/');
+      const atividades = await res.json();
+      const lista = document.getElementById('listaAtividades');
+
+      lista.innerHTML = '';
+      atividades.forEach(atividade => {
+        const div = document.createElement('div');
+        div.className = 'box';
+        div.innerHTML = `<strong>${atividade.titulo}</strong><br>${atividade.descricao}<br>${atividade.data} ${atividade.hora}<br>Status: ${atividade.status}<br>
+          <button class="button is-small is-danger mt-2" onclick="deletarAtividade(${atividade.id})">Excluir</button>`;
+        lista.appendChild(div);
+      });
+    }
+
+    async function deletarAtividade(id) {
+      await fetch(`/atividades/${id}/`, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRFToken': csrftoken
+        }
+      });
+      carregarAtividades();
+    }
+
+    carregarAtividades();
+  </script>
+</body>
+</html>
